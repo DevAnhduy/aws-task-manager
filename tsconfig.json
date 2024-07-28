@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@commons/*": ["./src/commons/*"],
+			"@modules/*": ["./src/modules/*"],
+			"@helpers/*": ["./src/helpers/*"],
+			"@configs/*": ["./src/configs/*"],
+			"@utils/*": ["./src/utils/*"],
+			"@apis/*": ["./src/apis/*"],
+			"@assets/*": ["./src/assets/*"],
+			"@styles/*": ["./src/styles/*"],
+			"@hooks/*": ["./src/hooks/*"],
+			"@pages/*": ["./src/pages/*"],
+			"@types/*": ["./src/types/*"],
+			"@stores/*": ["./src/stores/*"],
+			"@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/aws-exports.ts", "src/aws-exports.ts"],
+  "exclude": ["node_modules"]
+}
