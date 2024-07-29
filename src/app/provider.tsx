@@ -36,7 +36,7 @@ export const AppProvider = ({ children }: Props) => {
 			const getUser = async () => {
 				try {
 					const user = await getCurrentUser();
-
+					console.log('user: ', user);
 					if (!user) {
 						window.location.href = '/login';
 					}
@@ -48,7 +48,8 @@ export const AppProvider = ({ children }: Props) => {
 					setUser(user);
 					toggle();
 				} catch (err) {
-					window.location.href = '/login';
+					console.error('err: ', err);
+					//window.location.href = '/login';
 				}
 			};
 
