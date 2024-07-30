@@ -28,7 +28,7 @@ aws-credential.csv
 .vscode
 
 
-.next
+# .next
 .env
 
 #amplify-do-not-edit-begin
@@ -52,3 +52,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+*.pem
