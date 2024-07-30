@@ -71,7 +71,7 @@ export function LoginPage() {
 				});
 			}
 
-			console.log('Response', response);
+			return (window.location.href = '/tasks');
 		} catch (err: any) {
 			notifications.show({
 				color: 'red',

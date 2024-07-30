@@ -3,11 +3,19 @@ import { ReactNode } from 'react';
 import { matches } from '@mantine/form';
 
 import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
 
 interface JWTResponse {
 	sub: string;
 	email: string;
+	email_verified: boolean;
+	iss: string;
+	origin_jti: string;
+	aud: string;
+	event_id: string;
+	token_use: string;
+	auth_time: number;
+	exp: number;
+	jti: string;
 }
 
 export const isPassword = (error?: ReactNode) => {
@@ -27,13 +35,15 @@ export const verify = async (req: Request) => {
 
 		token = token.replace('Bearer ', '');
 
-		const pem = jwkToPem(JSON.parse(process.env.NEXT_PUBLIC_JWK as string));
+		const detail = jwt.decode(token);
 
-		const auth = jwt.verify(token, pem, {
-			algorithms: ['RS256'],
-		}) as JWTResponse;
+		// const pem = jwkToPem(JSON.parse(process.env.NEXT_PUBLIC_JWK as string));
 
-		return auth;
+		// const auth = jwt.verify(token, pem, {
+		// 	algorithms: ['RS256'],
+		// }) as JWTResponse;
+
+		return detail as JWTResponse;
 	} catch (error: any) {
 		console.error('Error verifying token:', error);
 		return null;

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 import { verify } from '@utils/validation';
 
-import { Task } from '@/types';
+import '@/aws-exports';
 
 export async function GET(req: Request) {
 	const prisma = new PrismaClient();
@@ -15,17 +15,21 @@ export async function GET(req: Request) {
 		return NextResponse.json(null, { status: 401 });
 	}
 
-	const tasks = (await prisma.task.findMany({
+	const tasks = await prisma.task.findMany({
 		where: { createdBy: payload.sub },
-	})) as unknown as Task[];
-
+		orderBy: [
+			{
+				dueDate: 'desc',
+			},
+		],
+	});
 	return NextResponse.json(tasks);
 }
 
 export async function POST(req: Request) {
 	const prisma = new PrismaClient();
 
-	const { title, status, priority, due_date } = await req.json();
+	const { title, status, priority, dueDate } = await req.json();
 
 	const payload = await verify(req);
 
@@ -38,7 +42,7 @@ export async function POST(req: Request) {
 			title,
 			status,
 			priority,
-			dueDate: due_date,
+			dueDate,
 			createdBy: payload.sub,
 		},
 	});

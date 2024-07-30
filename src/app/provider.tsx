@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect } from 'react';
 
-import { Box, LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -15,7 +15,14 @@ type Props = {
 
 import { usePathname } from 'next/navigation';
 
+import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { setToken } from '@utils/axios';
+
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout';
 
 import '../aws-exports';
 
@@ -36,20 +43,25 @@ export const AppProvider = ({ children }: Props) => {
 			const getUser = async () => {
 				try {
 					const user = await getCurrentUser();
-					console.log('user: ', user);
+					const key = `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID}.${user.username}.idToken`;
+					const token = localStorage.getItem(key);
+
 					if (!user) {
 						window.location.href = '/login';
 					}
+
+					setUser(user);
+					setToken(token || '');
 
 					if (isAuthPage) {
 						return (window.location.href = '/tasks');
 					}
 
-					setUser(user);
 					toggle();
 				} catch (err) {
-					console.error('err: ', err);
-					//window.location.href = '/login';
+					if (!isAuthPage) {
+						window.location.href = '/login';
+					}
 				}
 			};
 
@@ -72,9 +84,10 @@ export const AppProvider = ({ children }: Props) => {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Box bg="white" h="100vh">
-				{children}
-			</Box>
+			<ModalsProvider>
+				<AuthenticatedLayout>{children}</AuthenticatedLayout>
+			</ModalsProvider>
+			<Notifications position="bottom-right" zIndex={2000} />
 		</QueryClientProvider>
 	);
 };
