@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { useState } from 'react';
 
 import {
@@ -89,7 +91,8 @@ export const TasksPage = () => {
 								<Table.Td align="center" w={10}>
 									Index
 								</Table.Td>
-								<Table.Td w={300}>Title</Table.Td>
+								<Table.Td w={200}>Title</Table.Td>
+								<Table.Td align="center">File</Table.Td>
 								<Table.Td align="center">Status</Table.Td>
 								<Table.Td align="center">Priority</Table.Td>
 								<Table.Td align="center">Due Date</Table.Td>
@@ -114,13 +117,42 @@ export const TasksPage = () => {
 										<Table.Td align="center">
 											{(currentPage - 1) * MAX_ROW + idx + 1}
 										</Table.Td>
-										<Table.Td>{task.title}</Table.Td>
+										<Table.Td
+											maw={150}
+											style={{
+												overflow: 'hidden',
+												textOverflow: 'ellipsis',
+												whiteSpace: 'nowrap',
+											}}
+										>
+											{task.title}
+										</Table.Td>
+										<Table.Td
+											align="center"
+											maw={200}
+											style={{
+												overflow: 'hidden',
+												textOverflow: 'ellipsis',
+												whiteSpace: 'nowrap',
+											}}
+										>
+											{task.file ? (
+												<Link target="_blank" href={task.file}>
+													<Text fw={700} c="blue">
+														View
+													</Text>
+												</Link>
+											) : (
+												'-'
+											)}
+										</Table.Td>
 										<Table.Td align="center">
 											{getStatusTag(task.status)}
 										</Table.Td>
 										<Table.Td align="center">
 											{getPriorityTag(task.priority)}
 										</Table.Td>
+
 										<Table.Td align="center">
 											{dayjs(task.dueDate)
 												.format('YYYY/MM/DD HH:mm:ss')

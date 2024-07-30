@@ -5,7 +5,7 @@ import { ReactNode, useEffect } from 'react';
 import { LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { getCurrentUser } from 'aws-amplify/auth';
+import { fetchAuthSession, getCurrentUser } from 'aws-amplify/auth';
 
 import { useUserStore } from '@stores/auth';
 
@@ -43,15 +43,14 @@ export const AppProvider = ({ children }: Props) => {
 			const getUser = async () => {
 				try {
 					const user = await getCurrentUser();
-					const key = `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID}.${user.username}.idToken`;
-					const token = localStorage.getItem(key);
+					const session = await fetchAuthSession();
 
 					if (!user) {
 						window.location.href = '/login';
 					}
 
 					setUser(user);
-					setToken(token || '');
+					setToken(session.tokens?.accessToken.toString() || '');
 
 					if (isAuthPage) {
 						return (window.location.href = '/tasks');

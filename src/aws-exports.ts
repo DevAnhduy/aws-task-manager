@@ -17,6 +17,12 @@ const config: ResourcesConfig = {
 	API: {
 		REST: {},
 	},
+	Storage: {
+		S3: {
+			bucket: 'task-manager-asset',
+			region: 'ap-southeast-1',
+		},
+	},
 };
 
 Amplify.configure(config);

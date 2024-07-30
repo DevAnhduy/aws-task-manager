@@ -24,7 +24,7 @@ export async function GET(req: Request, context: any) {
 
 export async function PUT(req: NextRequest, context: any) {
 	const { params } = context;
-	const { title, status, priority, due_date } = await req.json();
+	const { title, status, priority, file, due_date } = await req.json();
 
 	const prisma = new PrismaClient();
 
@@ -49,6 +49,7 @@ export async function PUT(req: NextRequest, context: any) {
 			status: status || task.status,
 			priority: priority || task.priority,
 			dueDate: due_date || task.dueDate,
+			file: file || task.file,
 			createdBy: payload.sub,
 		},
 	});

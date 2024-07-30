@@ -18,6 +18,7 @@ model Task {
   title     String
   status    TaskStatus
   priority  TaskPriority
+  file      String       @default("")
   dueDate   DateTime     @default(now()) @map("due_date")
   createdBy String       @map("created_by")
 }

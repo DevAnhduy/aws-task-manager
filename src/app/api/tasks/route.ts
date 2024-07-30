@@ -29,7 +29,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
 	const prisma = new PrismaClient();
 
-	const { title, status, priority, dueDate } = await req.json();
+	const { title, status, priority, dueDate, file } = await req.json();
 
 	const payload = await verify(req);
 
@@ -37,15 +37,16 @@ export async function POST(req: Request) {
 		return NextResponse.json(null, { status: 401 });
 	}
 
-	const task = await prisma.task.create({
-		data: {
-			title,
-			status,
-			priority,
-			dueDate,
-			createdBy: payload.sub,
-		},
-	});
+	const data = {
+		title,
+		status,
+		priority,
+		dueDate,
+		createdBy: payload.sub,
+		file,
+	};
+
+	const task = await prisma.task.create({ data });
 
 	return NextResponse.json(task, { status: 201 });
 }

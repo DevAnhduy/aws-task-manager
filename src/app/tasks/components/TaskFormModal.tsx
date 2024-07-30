@@ -1,12 +1,20 @@
 import { useEffect } from 'react';
 
-import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
+import {
+	Button,
+	FileInput,
+	Group,
+	Select,
+	Stack,
+	TextInput,
+} from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 
 import { TaskPriority, TaskStatus } from '@prisma/client';
+import { getUrl, uploadData } from 'aws-amplify/storage';
 
 import { useCreateTaskMutation } from '../services/useCreateTaskMutation';
 import { useGetTaskQuery } from '../services/useGetTaskQuery';
@@ -25,6 +33,8 @@ export const TaskFormModal = ({ id }: TaskFormModalProps) => {
 			title: '',
 			status: 'PENDING',
 			priority: 'LOW',
+			file: '',
+			attachment: null,
 			dueDate: new Date(),
 		},
 		validate: {
@@ -42,6 +52,20 @@ export const TaskFormModal = ({ id }: TaskFormModalProps) => {
 
 	const handleSubmit = async (values: TaskForm) => {
 		try {
+			if (values.attachment instanceof File) {
+				await uploadData({
+					path: values.attachment.name,
+					data: values.attachment,
+					options: {
+						contentType: values.attachment.type,
+					},
+				}).result;
+
+				const res = await getUrl({ path: values.attachment.name });
+
+				values.file = res.url.href || '';
+			}
+
 			const response = taskDetail
 				? await updateTask({ id: taskDetail.id, data: values })
 				: await createTask(values);
@@ -117,12 +141,17 @@ export const TaskFormModal = ({ id }: TaskFormModalProps) => {
 					{...form.getInputProps('priority')}
 				/>
 				<DateInput
-					label="Date input"
+					label="Due Date"
 					valueFormat="YYYY/MM/DD HH:mm:ss"
 					defaultValue={new Date()}
 					key={form.key('dueDate')}
 					placeholder="Please choose due date"
 					{...form.getInputProps('dueDate')}
+				/>
+				<FileInput
+					label="File"
+					placeholder="Please choose file"
+					{...form.getInputProps('attachment')}
 				/>
 
 				<Group justify="end">
